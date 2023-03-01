@@ -122,7 +122,7 @@ export default class componentName extends Component {
                   "pb-3 border-b border-b-[#E50914]"
                 }   mx-4  w-fitinline text-start px-2 my-5 hover:text-gray-100  hover:border-b-[#E50914] cursor-pointer hover:border-b hover:pb-3  duration-100 `}
               >
-                Dislikesssss
+                Dislikessssssss
               </span>
             </div>
           </div>
