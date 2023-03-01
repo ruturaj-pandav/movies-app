@@ -1,6 +1,11 @@
 import React from "react";
 import swal from "sweetalert";
 import axios from "axios";
+import { AiOutlineDislike } from "react-icons/ai";
+import { AiOutlineLike } from "react-icons/ai";
+import { AiFillLike } from "react-icons/ai";
+import { AiFillDislike } from "react-icons/ai";
+import { BsFillBookmarkFill } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 export default function MovieInformationDiv({
@@ -17,7 +22,6 @@ export default function MovieInformationDiv({
   }, []);
 
   getUserInformation = async () => {
-    
     let id = this.state.movie_id;
     if (id !== undefined) {
       try {
@@ -32,7 +36,7 @@ export default function MovieInformationDiv({
         );
 
         let results = response.data.user;
-      
+
         user.push(results);
         // currentuser.push(results);
 
@@ -41,58 +45,84 @@ export default function MovieInformationDiv({
         // this.setState({ provider: results[Object.keys(results)[0]] });
       } catch (error) {}
     }
-
   };
   // let inwatchlist =
   //   user && user[0].watchlist.some((item) => item.originalId === parseInt(id));
 
-
   async function updateLikes() {
-    let token = localStorage.getItem("moviesToken");
-    let url = "http://localhost:8000/users/updateLikes";
-    let tmovie = {
-      movieName: movie.original_title,
-      movieRating: movie.vote_average,
-      movieBackdropPath: movie.backdrop_path,
-      originalId: id,
-    };
-    let response = await axios.post(
-      url,
-      { movie: tmovie },
-      {
-        headers: {
-          authorization: `token ${token}`,
-        },
+    try {
+      let token = localStorage.getItem("moviesToken");
+      let url = "http://localhost:8000/users/updateLikes";
+      let tmovie = {
+        movieName: movie.original_title,
+        movieRating: movie.vote_average,
+        movieBackdropPath: movie.backdrop_path,
+        originalId: id,
+      };
+      let response = await axios.post(
+        url,
+        { movie: tmovie },
+        {
+          headers: {
+            authorization: `token ${token}`,
+          },
+        }
+      );
+      if (response) {
+        if (response.status === 200) {
+          swal("Success", response.data.message, "success");
+        }
       }
-    );
-    if (response) {
-      if (response.status === 200) {
-        swal("Success", response.data.message, "success");
-      }
+    } catch (error) {
+      swal({
+        title: "Login needed",
+        text: "You must be logged in for this . Go to Login ? ",
+        icon: "error",
+        buttons: true,
+        dangerMode: false,
+      }).then((yes) => {
+        if (yes) {
+          navigate("/login");
+        }
+      });
     }
   }
   async function updateDislikes() {
-    let token = localStorage.getItem("moviesToken");
-    let url = "http://localhost:8000/users/updateDislikes";
-    let tmovie = {
-      movieName: movie.original_title,
-      movieRating: movie.vote_average,
-      movieBackdropPath: movie.backdrop_path,
-      originalId: id,
-    };
-    let response = await axios.post(
-      url,
-      { movie: tmovie },
-      {
-        headers: {
-          authorization: `token ${token}`,
-        },
+    try {
+      let token = localStorage.getItem("moviesToken");
+      let url = "http://localhost:8000/users/updateDislikes";
+      let tmovie = {
+        movieName: movie.original_title,
+        movieRating: movie.vote_average,
+        movieBackdropPath: movie.backdrop_path,
+        originalId: id,
+      };
+      let response = await axios.post(
+        url,
+        { movie: tmovie },
+        {
+          headers: {
+            authorization: `token ${token}`,
+          },
+        }
+      );
+      if (response) {
+        if (response.status === 200) {
+          swal("Success", response.data.message, "success");
+        }
       }
-    );
-    if (response) {
-      if (response.status === 200) {
-        swal("Success", response.data.message, "success");
-      }
+    } catch (error) {
+      swal({
+        title: "Login needed",
+        text: "You must be logged in for this . Go to Login ? ",
+        icon: "error",
+        buttons: true,
+        dangerMode: false,
+      }).then((yes) => {
+        if (yes) {
+          navigate("/login");
+        }
+      });
     }
   }
   async function updateWatchlist() {
@@ -141,26 +171,26 @@ export default function MovieInformationDiv({
           onClick={() => {
             updateLikes();
           }}
-          className="text-5xl mx-3 text-red-500 border rounded-full  filled hover:scale-105 duration-100 cursor-pointer inline-block "
+          className="text-5xl   rounded-full  filled hover:scale-105 duration-100 cursor-pointer inline-block "
         >
-          <ion-icon name="heart-outline"></ion-icon>
+      <AiOutlineLike/>
         </span>
         <span
           onClick={() => {
             updateDislikes();
           }}
-          className="text-5xl mx-3 text-black hover:scale-105 duration-100 cursor-pointer inline-block "
+          className="text-5xl mx-5 text-black hover:scale-105 duration-100 cursor-pointer inline-block "
         >
-          <ion-icon name="heart-dislike-outline"></ion-icon>
+          <AiOutlineDislike/>
         </span>
         <span
           onClick={() => {
             updateWatchlist();
           }}
-          className={`mx-3 text-gray-500 hover:scale-105 duration-100 cursor-pointer inline-block      `}
+          className={`hover:scale-105 duration-100 cursor-pointer inline-block   text-5xl   `}
         >
-          {/* ${            inwatchlist ? "text-xl  " : "text-5xl "          } */}
-          <ion-icon name="bookmark-outline"></ion-icon>
+        
+         <BsFillBookmarkFill/>
         </span>
       </div>
       <div>
@@ -226,7 +256,6 @@ export default function MovieInformationDiv({
                   </select>
                 </div>
                 <div className="  col-span-3  w-full ">
-              
                   <span className="block  text-2xl  capitalize  ">
                     {watchMode} options{" "}
                   </span>

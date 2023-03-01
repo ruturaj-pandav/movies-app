@@ -3,6 +3,6 @@ seprate login logout navbar
 flatrate thing in where to watch 
 cast info in MovieInformationDiv
 
-the 3 buttons should run only if user is logged in 
+the watchlist button should run only if user is logged in 
 
-// fucntion to add two numbers ? 
+
