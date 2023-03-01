@@ -7,6 +7,11 @@ export default function Navbar() {
     localStorage.removeItem("moviesToken");
     navigate(`/login`);
   }
+  async function goToDashboard() {
+   
+
+    navigate(`/dashboard`);
+  }
   let navigate = useNavigate();
   return (
     <div className="flex justify-between px-3 py-3 ">
@@ -25,6 +30,15 @@ export default function Navbar() {
         </span>
       </div>
       <div className="hidden md:flex  ">
+        <button
+          onClick={() => {
+            goToDashboard();
+          }}
+          className="text-[#E50914] bg-white border-2 border-[#E50914] text-xl px-8 font-semibold  duration-100 cursor-pointer  mx-2 "
+         
+        >
+        Go to dashboard
+        </button>
         <button
           onClick={() => {
             logoutFunction();

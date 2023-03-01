@@ -1,8 +1,5 @@
 seprate login logout navbar 
-
 flatrate thing in where to watch 
 cast info in MovieInformationDiv
-
-the watchlist button should run only if user is logged in 
-
+if user has already liked a movie , so should be identifiable , by a seperate icon
 

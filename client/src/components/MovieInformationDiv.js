@@ -8,44 +8,66 @@ import { AiFillDislike } from "react-icons/ai";
 import { BsFillBookmarkFill } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-export default function MovieInformationDiv({
-  movie,
-  provider,
-
-  getUserInformation,
-}) {
+export default function MovieInformationDiv({ movie, provider }) {
   let navigate = useNavigate();
-  const [user, setuser] = useState([]);
   let { id } = useParams();
+  const [user, setuser] = useState([]);
+  const [optionAmongFour, setOptionAmongFour] = useState("overview");
+  const [watchMode, setWatchMode] = useState("rent");
+  const [likedID, setLikedID] = useState([]);
+  const [dislikedID, setDislikedID] = useState([]);
+  const containsNumber = (arr, num) => {
+    return arr.includes(num);
+  };
+
   useEffect(() => {
     getUserInformation();
   }, []);
 
-  getUserInformation = async () => {
-    let id = this.state.movie_id;
-    if (id !== undefined) {
-      try {
-        let response = await axios.post(
-          "http://localhost:8000/users/individual",
-          {},
-          {
-            headers: {
-              authorization: `token ${localStorage.getItem("moviesToken")}`,
-            },
-          }
-        );
-
-        let results = response.data.user;
-
-        user.push(results);
-        // currentuser.push(results);
-
-        setuser(results);
-
-        // this.setState({ provider: results[Object.keys(results)[0]] });
-      } catch (error) {}
+  function updateDislikedID(user) {
+    let dislikes = user.dislikes;
+    if (dislikes.length > 0) {
+      let current = [];
+      dislikes.map((dislikes, index) => {
+        current.push(dislikes.originalId);
+      });
+      setDislikedID(current);
     }
-  };
+  }
+  function updateLikedID(user) {
+    let likes = user.likes;
+    if (likes.length > 0) {
+      let current = [];
+      likes.map((like, index) => {
+        current.push(like.originalId);
+      });
+      setLikedID(current);
+    }
+  }
+  async function getUserInformation() {
+    try {
+      let response = await axios.post(
+        "http://localhost:8000/users/individual",
+        {},
+        {
+          headers: {
+            authorization: `token ${localStorage.getItem("moviesToken")}`,
+          },
+        }
+      );
+
+      setuser([]);
+
+      let results = response.data.user;
+
+      // currentuser.push(results);
+
+      setuser(results);
+
+      updateLikedID(results);
+      // this.setState({ provider: results[Object.keys(results)[0]] });
+    } catch (error) {}
+  }
   // let inwatchlist =
   //   user && user[0].watchlist.some((item) => item.originalId === parseInt(id));
 
@@ -71,6 +93,7 @@ export default function MovieInformationDiv({
       if (response) {
         if (response.status === 200) {
           swal("Success", response.data.message, "success");
+          getUserInformation();
         }
       }
     } catch (error) {
@@ -109,6 +132,7 @@ export default function MovieInformationDiv({
       if (response) {
         if (response.status === 200) {
           swal("Success", response.data.message, "success");
+          getUserInformation();
         }
       }
     } catch (error) {
@@ -126,36 +150,49 @@ export default function MovieInformationDiv({
     }
   }
   async function updateWatchlist() {
-    let token = localStorage.getItem("moviesToken");
-    let url = "http://localhost:8000/users/updateWatchlist";
-    let tmovie = {
-      movieName: movie.original_title,
-      movieRating: movie.vote_average,
-      movieBackdropPath: movie.backdrop_path,
-      originalId: id,
-    };
-    let response = await axios.post(
-      url,
-      { movie: tmovie },
-      {
-        headers: {
-          authorization: `token ${token}`,
-        },
+    try {
+      let token = localStorage.getItem("moviesToken");
+      let url = "http://localhost:8000/users/updateWatchlist";
+      let tmovie = {
+        movieName: movie.original_title,
+        movieRating: movie.vote_average,
+        movieBackdropPath: movie.backdrop_path,
+        originalId: id,
+      };
+      let response = await axios.post(
+        url,
+        { movie: tmovie },
+        {
+          headers: {
+            authorization: `token ${token}`,
+          },
+        }
+      );
+      if (response) {
+        if (response.status === 200) {
+          swal("Success", response.data.message, "success");
+          getUserInformation();
+        }
       }
-    );
-    if (response) {
-      if (response.status === 200) {
-        swal("Success", response.data.message, "success");
-        getUserInformation();
-      }
+    } catch (error) {
+      swal({
+        title: "Login needed",
+        text: "You must be logged in for this . Go to Login ? ",
+        icon: "error",
+        buttons: true,
+        dangerMode: false,
+      }).then((yes) => {
+        if (yes) {
+          navigate("/login");
+        }
+      });
     }
   }
 
-  const [optionAmongFour, setOptionAmongFour] = useState("overview");
-  const [watchMode, setWatchMode] = useState("rent");
   const handleSelectChange = (event) => {
     setWatchMode(event.target.value);
   };
+
   return (
     <div className="  px-2 lg:px-8">
       <div className=" mt-3 mb-5 text-start  ">
@@ -173,7 +210,11 @@ export default function MovieInformationDiv({
           }}
           className="text-5xl   rounded-full  filled hover:scale-105 duration-100 cursor-pointer inline-block "
         >
-      <AiOutlineLike/>
+          {containsNumber(likedID, parseInt(id)) ? (
+            <AiFillLike />
+          ) : (
+            <AiOutlineLike />
+          )}
         </span>
         <span
           onClick={() => {
@@ -181,7 +222,12 @@ export default function MovieInformationDiv({
           }}
           className="text-5xl mx-5 text-black hover:scale-105 duration-100 cursor-pointer inline-block "
         >
-          <AiOutlineDislike/>
+          {" "}
+          {containsNumber(dislikedID, parseInt(id)) ? (
+            <AiFillDislike />
+          ) : (
+            <AiOutlineDislike />
+          )}
         </span>
         <span
           onClick={() => {
@@ -189,8 +235,7 @@ export default function MovieInformationDiv({
           }}
           className={`hover:scale-105 duration-100 cursor-pointer inline-block   text-5xl   `}
         >
-        
-         <BsFillBookmarkFill/>
+          <BsFillBookmarkFill />
         </span>
       </div>
       <div>

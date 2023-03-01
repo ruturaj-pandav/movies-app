@@ -5,7 +5,8 @@ import UpcomingMovies from "./UpcomingMovies";
 import LatestMovie from "./LatestMovie";
 import NowPlaying from "./NowPlaying";
 import Loader from "./Loader";
-import Navbar from "./Navbar";
+import NavbarLogin from "./NavbarLogin";
+import NavbarLogout from "./NavbarLogout";
 import TopRated from "./TopRated";
 
 //how to center a div in tailwind css ?
@@ -43,7 +44,7 @@ export default class componentName extends Component {
       upcoming_movies: [],
       latest_movie: [],
       loggedin: false,
-      now_playing:[],
+      now_playing: [],
       top_rated: [],
     };
   }
@@ -54,7 +55,6 @@ export default class componentName extends Component {
       https://api.themoviedb.org/3/movie/latest?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`);
 
       this.setState({ latest_movie: response.data });
-      
     } catch (error) {}
   };
   getPopularMovies = async () => {
@@ -87,7 +87,6 @@ export default class componentName extends Component {
       https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&page=1`);
 
       this.setState({ now_playing: response.data.results });
-   
     } catch (error) {}
   };
 
@@ -102,7 +101,7 @@ export default class componentName extends Component {
     return (
       <div>
         {" "}
-        <Navbar />
+        {this.state.loggedin === false ? <NavbarLogin /> : <NavbarLogout />}
         {/* <LatestMovie latest_movie={ this.state.latest_movie} /> */}
         {this.state.top_rated.length !== 0 &&
         this.state.now_playing.length !== 0 &&
