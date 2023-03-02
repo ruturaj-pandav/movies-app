@@ -1,5 +1,4 @@
 seprate login logout navbar 
 
 cast info in MovieInformationDiv
-if user has already liked a movie , so should be identifiable , by a seperate icon
-
+watchlist button works

@@ -9,7 +9,6 @@ import { BsFillBookmarkFill } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 export default function MovieInformationDiv({ movie, provider }) {
-  console.log("this is movie : ", provider);
   let navigate = useNavigate();
   let { id } = useParams();
   const [user, setuser] = useState([]);
@@ -25,28 +24,30 @@ export default function MovieInformationDiv({ movie, provider }) {
     getUserInformation();
   }, []);
 
-  function updateDislikedID(user) {
-    let dislikes = user.dislikes;
-    if (dislikes.length > 0) {
-      let current = [];
-      dislikes.map((dislikes, index) => {
-        current.push(dislikes.originalId);
-      });
-      setDislikedID(current);
-    }
-  }
-  function updateLikedID(user) {
-    let likes = user.likes;
-    if (likes.length > 0) {
-      let current = [];
-      likes.map((like, index) => {
-        current.push(like.originalId);
-      });
-      setLikedID(current);
-    }
-  }
+  // function updateDislikedID(user) {
+  //   let dislikes = user.dislikes;
+  //   if (dislikes.length > 0) {
+  //     let current = [];
+  //     dislikes.map((dislikes, index) => {
+  //       current.push(dislikes.originalId);
+  //     });
+  //     setDislikedID(current);
+  //   }
+  // }
+  // function updateLikedID(user) {
+  //   let likes = user.likes;
+  //   if (likes.length > 0) {
+  //     let current = [];
+  //     likes.map((like, index) => {
+  //       current.push(like.originalId);
+  //     });
+  //     setLikedID(current);
+  //   } else {
+  //   }
+  // }
   async function getUserInformation() {
     try {
+      console.log("getting userinformation : ");
       let response = await axios.post(
         "http://localhost:8000/users/individual",
         {},
@@ -61,11 +62,12 @@ export default function MovieInformationDiv({ movie, provider }) {
 
       let results = response.data.user;
 
+      console.log("user information : ", results);
       // currentuser.push(results);
 
       setuser(results);
 
-      updateLikedID(results);
+      // updateLikedID(results);
       // this.setState({ provider: results[Object.keys(results)[0]] });
     } catch (error) {}
   }
@@ -211,10 +213,18 @@ export default function MovieInformationDiv({ movie, provider }) {
           }}
           className="text-5xl   rounded-full  filled hover:scale-105 duration-100 cursor-pointer inline-block "
         >
-          {containsNumber(likedID, parseInt(id)) ? (
-            <AiFillLike />
+          {user &&
+          user.likes &&
+          user.likes.some((object) => object.originalId === parseInt(id)) ? (
+            <span className="text-green-500 ">
+              {" "}
+              <AiFillLike />
+            </span>
           ) : (
-            <AiOutlineLike />
+            <span className="text-green-500">
+              {" "}
+              <AiOutlineLike />
+            </span>
           )}
         </span>
         <span
@@ -224,10 +234,20 @@ export default function MovieInformationDiv({ movie, provider }) {
           className="text-5xl mx-5 text-black hover:scale-105 duration-100 cursor-pointer inline-block "
         >
           {" "}
-          {containsNumber(dislikedID, parseInt(id)) ? (
-            <AiFillDislike />
+          {/* {console.log(
+            "this is teh result : ",
+           (  user.dislikes.some((obj) => obj.originalID === parseInt(id)))
+          )} */}
+          {user &&
+          user.dislikes &&
+          user.dislikes.some((obj) => obj.originalId === parseInt(id)) ? (
+            <span className="text-red-500">
+              <AiFillDislike />
+            </span>
           ) : (
-            <AiOutlineDislike />
+            <span className="text-red-500">
+              <AiOutlineDislike />
+            </span>
           )}
         </span>
         <span
@@ -335,10 +355,13 @@ export default function MovieInformationDiv({ movie, provider }) {
                 {provider.hasOwnProperty("flatrate") && (
                   <div className="grid grid-cols-3 ">
                     {" "}
-                    <div className="col-span-1 text-xl font-semibold ">Flatrate </div>
+                    <div className="col-span-1 text-xl font-semibold ">
+                      Flatrate{" "}
+                    </div>
                     <div className="py-3 inline-block  w-full  grid grid-cols-3">
                       <div className="py-3 inline-block  w-full  grid grid-cols-3">
-                        {provider.hasOwnProperty("flatrate") && provider.flatrate.map((name, index) => {
+                        {provider.hasOwnProperty("flatrate") &&
+                          provider.flatrate.map((name, index) => {
                             console.log("flat rate index ; ", index);
                             return (
                               <div
