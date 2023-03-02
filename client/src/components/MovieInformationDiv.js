@@ -5,10 +5,12 @@ import { AiOutlineDislike } from "react-icons/ai";
 import { AiOutlineLike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
 import { AiFillDislike } from "react-icons/ai";
+import { BsBookmark } from "react-icons/bs";
 import { BsFillBookmarkFill } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 export default function MovieInformationDiv({ movie, provider }) {
+  console.log("this is provider : ", provider);
   let navigate = useNavigate();
   let { id } = useParams();
   const [user, setuser] = useState([]);
@@ -22,13 +24,9 @@ export default function MovieInformationDiv({ movie, provider }) {
   };
 
   useEffect(() => {
-    
-
-
     getUserInformation();
   }, []);
 
-  
   // function updateDislikedID(user) {
   //   let dislikes = user.dislikes;
   //   if (dislikes.length > 0) {
@@ -221,12 +219,12 @@ export default function MovieInformationDiv({ movie, provider }) {
           {user &&
           user.likes &&
           user.likes.some((object) => object.originalId === parseInt(id)) ? (
-            <span className="text-green-500 ">
+            <span className="text-pink-500 ">
               {" "}
               <AiFillLike />
             </span>
           ) : (
-            <span className="text-green-500">
+            <span className="text-pink-500">
               {" "}
               <AiOutlineLike />
             </span>
@@ -246,11 +244,11 @@ export default function MovieInformationDiv({ movie, provider }) {
           {user &&
           user.dislikes &&
           user.dislikes.some((obj) => obj.originalId === parseInt(id)) ? (
-            <span className="text-red-500">
+            <span className="text-black-500">
               <AiFillDislike />
             </span>
           ) : (
-            <span className="text-red-500">
+            <span className="text-black-500">
               <AiOutlineDislike />
             </span>
           )}
@@ -261,7 +259,18 @@ export default function MovieInformationDiv({ movie, provider }) {
           }}
           className={`hover:scale-105 duration-100 cursor-pointer inline-block   text-5xl   `}
         >
-          <BsFillBookmarkFill />
+          {user &&
+          user.watchlist &&
+          user.watchlist.some((obj) => obj.originalId === parseInt(id)) ? (
+            <span className="text-cyan-500">
+              <BsFillBookmarkFill />
+            </span>
+          ) : (
+            <span className="text-cyan-500">
+              <BsBookmark />
+            </span>
+          )}
+          {/* <BsFillBookmarkFill /> */}
         </span>
       </div>
       <div>
@@ -333,6 +342,7 @@ export default function MovieInformationDiv({ movie, provider }) {
                   <div className="py-3 inline-block  w-full  grid grid-cols-3">
                     {(provider.hasOwnProperty("rent") ||
                       provider.hasOwnProperty("buy")) &&
+                      provider.hasOwnProperty(watchMode) &&
                       provider[watchMode].map((name, index) => {
                         return (
                           <div
