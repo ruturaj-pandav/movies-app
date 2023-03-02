@@ -9,6 +9,7 @@ import { BsFillBookmarkFill } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 export default function MovieInformationDiv({ movie, provider }) {
+  console.log("this is movie : ", provider);
   let navigate = useNavigate();
   let { id } = useParams();
   const [user, setuser] = useState([]);
@@ -334,8 +335,31 @@ export default function MovieInformationDiv({ movie, provider }) {
                 {provider.hasOwnProperty("flatrate") && (
                   <div className="grid grid-cols-3 ">
                     {" "}
-                    <div className="col-span-1">Flatrate </div>
-                    <div className="col-span-2">Flatrate </div>
+                    <div className="col-span-1 text-xl font-semibold ">Flatrate </div>
+                    <div className="py-3 inline-block  w-full  grid grid-cols-3">
+                      <div className="py-3 inline-block  w-full  grid grid-cols-3">
+                        {provider.hasOwnProperty("flatrate") && provider.flatrate.map((name, index) => {
+                            console.log("flat rate index ; ", index);
+                            return (
+                              <div
+                                className={` my-3 inline-block cursor-pointer hover:scale-105 duration-300    ${
+                                  index % 3 !== 0 && "mx-6 "
+                                }`}
+                              >
+                                <img
+                                  className=" h-8  w-8 rounded-full"
+                                  src={`https://image.tmdb.org/t/p/original${
+                                    name && name.logo_path
+                                  }`}
+                                />
+                                <span className="text-sm text-gray-500 mt-2 block duration-100">
+                                  {name.provider_name}
+                                </span>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
