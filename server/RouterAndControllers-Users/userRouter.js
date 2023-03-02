@@ -4,6 +4,7 @@ const userController = require('./userController');
 const userRouter = express.Router();
 
 userRouter.get('/',userController.getAllUsers);
+userRouter.post('/verifyLogin',userController.verifyLogin);
 userRouter.post('/individual',   userController.verifyToken , userController.getUserById);
 userRouter.post('/',   userController.createUser);
 userRouter.post('/login',   userController.loginUser);

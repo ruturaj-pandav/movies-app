@@ -47,7 +47,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import Recommendations from "./Recommendations";
 import Reviews from "./Reviews";
-import Navbar from "./Navbar";
+import NavbarLogout from "./NavbarLogout";
+import NavbarLogin from "./NavbarLogin";
 import Loader from "./Loader";
 import MoviePosterDiv from "./MoviePosterDiv";
 import MovieInformationDiv from "./MovieInformationDiv";
@@ -58,14 +59,34 @@ export default class componentName extends Component {
       loggedin: false,
       movie_id: window.location.href.split("/")[4],
       movie: [],
-      
+
       provider: [],
       reviews: [],
       cast: [],
       recommendations: [],
     };
   }
-  
+  verifyLogin = async () => {
+    try {
+      // Make a GET request to the /verify-login endpoint
+      const response = await axios.post(
+        "http://localhost:8000/users/verifyLogin",
+        {},
+        {
+          headers: {
+            "authorization": `token ${localStorage.getItem("moviesToken")}`,
+          },
+        }
+      );
+
+      // If verification succeeds, set loggedIn state to true
+      if (response.data.verified) {
+        this.setState({ loggedin: true });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   getProviders = async () => {
     let id = this.state.movie_id;
     if (id !== undefined) {
@@ -78,11 +99,10 @@ export default class componentName extends Component {
         this.setState({ provider: results[Object.keys(results)[0]] });
       } catch (error) {}
     }
-   
   };
   getReviews = async () => {
     let id = this.state.movie_id;
-   
+
     if (id !== undefined) {
       try {
         let response = await axios.get(`
@@ -104,9 +124,7 @@ export default class componentName extends Component {
       } catch (error) {}
     }
   };
-  getCast = async () => {
- 
-  };
+  getCast = async () => {};
   getMovies = async () => {
     let id = this.state.movie_id;
     if (id !== undefined) {
@@ -119,11 +137,12 @@ export default class componentName extends Component {
     }
   };
   componentDidMount() {
+    this.verifyLogin();
     this.getCast();
     this.getMovies();
     this.getProviders();
     this.getRecommendations();
-   
+
     this.getReviews();
   }
   render() {
@@ -132,11 +151,10 @@ export default class componentName extends Component {
         {this.state.movie.length !== 0 &&
         this.state.reviews.length !== 0 &&
         this.state.movie.cast !== 0 &&
-    
         this.state.recommendations.length !== 0 &&
         this.state.provider.length !== 0 ? (
           <div>
-            <Navbar />
+            {this.state.loggedin === true ? <NavbarLogout/> : <NavbarLogin/>}
             <div className="grid grid-cols-5 ">
               <div className="col-span-5 lg:col-span-2">
                 {" "}
@@ -147,9 +165,7 @@ export default class componentName extends Component {
               <div className="col-span-5 lg:col-span-3 ">
                 <MovieInformationDiv
                   movie={this.state.movie}
-                
                   provider={this.state.provider}
-                  
                 />
               </div>
             </div>
@@ -162,7 +178,6 @@ export default class componentName extends Component {
               <Recommendations
                 recommendations={this.state.recommendations}
                 title={this.state.movie.original_title}
-
               />
             </div>
           </div>

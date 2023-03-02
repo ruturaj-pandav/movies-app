@@ -198,6 +198,35 @@ const userController = {
   },
 
   //////////////////// get all users from the database
+  verifyLogin: async (req, res) => {
+    try {
+      // Extract the token from the header
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        // If authorization header is missing, return false
+        return res.json({ verified: false  , message :"auth header missing"});
+      }
+  
+      const token = authHeader.split(' ')[1];
+      if (!token) {
+        // If token is missing or null, return false
+        return res.json({ verified: false , message :"token header missing" });
+      }
+  
+      // Verify the token
+      const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+      if (!decoded) {
+        // If token verification fails, return false
+        return res.json({ verified: false , message :"DECODED NOT VERIFIED" });
+      } else {
+        // If token verification succeeds, return true
+        return res.json({ verified: true });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  },
   getAllUsers: async (req, res) => {
     try {
       const users = await Users.find();

@@ -12,6 +12,7 @@ export default function MovieInformationDiv({ movie, provider }) {
   let navigate = useNavigate();
   let { id } = useParams();
   const [user, setuser] = useState([]);
+  const [loggedin, setloggedin] = useState(false);
   const [optionAmongFour, setOptionAmongFour] = useState("overview");
   const [watchMode, setWatchMode] = useState("rent");
   const [likedID, setLikedID] = useState([]);
@@ -21,9 +22,13 @@ export default function MovieInformationDiv({ movie, provider }) {
   };
 
   useEffect(() => {
+    
+
+
     getUserInformation();
   }, []);
 
+  
   // function updateDislikedID(user) {
   //   let dislikes = user.dislikes;
   //   if (dislikes.length > 0) {
