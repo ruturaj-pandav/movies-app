@@ -58,11 +58,11 @@ export default class componentName extends Component {
     this.state = {
       loggedin: false,
       movie_id: window.location.href.split("/")[4],
-      movie: [],
+      movie: "",
 
-      provider: [],
-      reviews: [],
-      cast: [],
+      provider: "",
+      reviews: "",
+      cast: "",
       recommendations: [],
     };
   }
@@ -148,13 +148,10 @@ export default class componentName extends Component {
   render() {
     return (
       <div>
-        {this.state.movie.length !== 0 &&
-        this.state.reviews.length !== 0 &&
-        this.state.movie.cast !== 0 &&
-        this.state.recommendations.length !== 0 &&
-        this.state.provider.length !== 0 ? (
+       
+        {this.state.movie !== undefined  ? (
           <div>
-            {this.state.loggedin === true ? <NavbarLogout/> : <NavbarLogin/>}
+            {this.state.loggedin === true ? <NavbarLogout /> : <NavbarLogin />}
             <div className="grid grid-cols-5 ">
               <div className="col-span-5 lg:col-span-2">
                 {" "}

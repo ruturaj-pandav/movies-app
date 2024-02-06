@@ -49,6 +49,29 @@ export default class componentName extends Component {
     };
   }
 
+
+   verifyLogin = async () => {
+    try {
+      // Make a GET request to the /verify-login endpoint
+      const response = await axios.post(
+        "http://localhost:8000/users/verifyLogin",
+        {},
+        {
+          headers: {
+            "authorization": `token ${localStorage.getItem("moviesToken")}`,
+          },
+        }
+      );
+
+      // If verification succeeds, set loggedIn state to true
+      if (response.data.verified) {
+        console.log("login success")
+        this.setState({ loggedin: true });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   getLatestMovies = async () => {
     try {
       let response = await axios.get(`
@@ -91,6 +114,7 @@ export default class componentName extends Component {
   };
 
   componentDidMount() {
+        this.verifyLogin();
     this.getPopularMovies();
     this.getTopRatedMovies();
     this.getNowPlaying();

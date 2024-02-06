@@ -22,7 +22,6 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/movie/:id" element={<Movie />} />
           <Route path="/movies/genre/:genretype" element={<Genre />} />
-          <Route path="/actors/:actor_id" element={<Actors />} />
         </Routes>
       </BrowserRouter>
     </div>
